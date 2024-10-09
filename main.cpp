@@ -8,6 +8,7 @@
 #define GS 7
 #define GSGS GS*GS
 enum direction { L = -1, R = 1, U = -GS, D = GS, X = 0};
+int solutions=0;
 /*0b00000011
     00000011
     00000001
@@ -151,7 +152,7 @@ class Solver {
         // place all form
         bool ret_val = true;
         for (auto& [form, is_used] : forms) {
-            if (is_used) continue;
+            if (is_used) {continue;}
             ret_val = false;
             // find next_free_state
             while (grid & (1ull << (63 - cur_pos))) cur_pos+=1;
@@ -170,11 +171,15 @@ class Solver {
                 Solver s(*this);
                 s.forms[form] = 1;
                 s.grid = new_grid;
+                form->state = shifted_state;
                 if (s.solve()){
-                    form->state = shifted_state;
-                    return true;
+                    return false;
                 }
             }
+        }
+        if (ret_val){
+            present_solution();
+            solutions++;
         }
         return ret_val;
     }
@@ -191,21 +196,24 @@ class Solver {
             idx++;
         }
         std::cout<<"\n";
+        std::cout<<"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
         for (int j =0; j< 8; j++) {
             for (int i=0; i <8; i++){
                 std::cout<<grid[i+j*8]<<" ";
             }
             std::cout<<"\n";
         }
+        std::cout<<"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n";
+        std::cout<<"\n"<< "\n";
     }
 };
 
 
 int main()
 {
-    Solver s;
-    s.set_date(9,19);
-    std::cout<<s.solve();
-    s.present_solution();
+        Solver s;
+        s.set_date(10,9);
+        std::cout<<s.solve();
+        std::cout<<"\n"<<solutions<<"\n";
     return 0;
 }
